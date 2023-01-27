@@ -1,3 +1,8 @@
+import React from "react";
+
+import { SelectChangeEvent } from "@mui/material/Select";
+import { FormControl, MenuItem, Select } from "@mui/material";
+
 import ProductCard from "./components/ProductCard";
 
 import "./App.css";
@@ -590,14 +595,63 @@ const allProducts = {
   limit: 30,
 };
 
+const options = [
+  {
+    value: 1,
+    label: 1,
+  },
+  {
+    value: 2,
+    label: 2,
+  },
+  {
+    value: 3,
+    label: 3,
+  },
+  {
+    value: 4,
+    label: 4,
+  },
+  {
+    value: 5,
+    label: 5,
+  },
+];
+
 function App() {
+  const [columns, setColumns] = React.useState("4");
+  const gridClass = `border-4 grid grid-cols-${columns} gap-x-10 gap-y-10 py-5`;
+
+  const handleChange = (event: SelectChangeEvent) => {
+    console.log(event.target.value);
+    setColumns(event.target.value as string);
+  };
+
   return (
-    <div className="border-4 border-black max-w-7xl flex flex-col items-center m-auto">
-      <h1 className="text-3xl font-bold">Products List</h1>
-      <div>
-        <p>Number of columns: 4</p>
+    <div className="border-4 border-black max-w-7xl flex flex-col items-center m-auto pt-10">
+      <h1 className="text-3xl font-bold underline underline-offset-2">
+        Products List
+      </h1>
+      <div className="border border-green-400 w-full h-20 flex justify-end items-center">
+        <p className="mr-3">Number of cards per column</p>
+        <FormControl className="w-80">
+          <Select
+            labelId="simple-select-label"
+            id="simple-select"
+            value={columns}
+            onChange={handleChange}
+          >
+            {options.map((option) => {
+              return (
+                <MenuItem key={option.label} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
       </div>
-      <div className="border-4 grid grid-cols-4 gap-x-10 gap-y-10">
+      <div className={gridClass}>
         {allProducts.products.map((product) => {
           return (
             <ProductCard

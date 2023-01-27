@@ -1,8 +1,11 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import "./App.css";
-import axios from "axios";
 import ProductCard from "./components/ProductCard";
+
+import "./App.css";
+import "swiper/css";
+import "swiper/css/autoplay";
+import "swiper/css/effect-fade";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const allProducts = {
   products: [
@@ -587,31 +590,22 @@ const allProducts = {
   limit: 30,
 };
 
-const url = "https://dummyjson.com/products";
-
-const fetchProducts = async () => {
-  const response = await axios.get(url);
-  console.log("Response", response);
-  return response;
-};
-
 function App() {
-  const products = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
   return (
     <div className="border-4 border-black max-w-7xl flex flex-col items-center m-auto">
-      <h1>Products List</h1>
+      <h1 className="text-3xl font-bold">Products List</h1>
       <div>
         <p>Number of columns: 4</p>
       </div>
-      <div className="border-4 grid grid-cols-4 gap-4">
+      <div className="border-4 grid grid-cols-4 gap-x-10 gap-y-10">
         {allProducts.products.map((product) => {
           return (
             <ProductCard
               key={product.id}
-              title={product.title}
               brand={product.brand}
+              images={product.images}
               thumbnail={product.thumbnail}
+              title={product.title}
             />
           );
         })}

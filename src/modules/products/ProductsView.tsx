@@ -13,29 +13,6 @@ import ProductCard from "./components/ProductCard";
 import { ProductService } from "./lib/ProductsService";
 import { Product } from "./utils/types";
 
-const options = [
-  {
-    value: 1,
-    label: 1,
-  },
-  {
-    value: 2,
-    label: 2,
-  },
-  {
-    value: 3,
-    label: 3,
-  },
-  {
-    value: 4,
-    label: 4,
-  },
-  {
-    value: 5,
-    label: 5,
-  },
-];
-
 export function ProductsView() {
   const productService = new ProductService();
   const [products, setProducts] = React.useState<Product[]>([]);
@@ -52,10 +29,13 @@ export function ProductsView() {
       setLoading(true);
       setProducts([]);
 
-      productService.products(limit, skip).then((products) => {
+      const fetchProducts = async () => {
+        const products = await productService.getProducts(limit, skip);
         setProducts(products);
         setLoading(false);
-      });
+      };
+
+      fetchProducts();
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -95,10 +75,10 @@ export function ProductsView() {
             value={columns}
             onChange={handleChange}
           >
-            {options.map((option) => {
+            {Array.from({ length: 5 }, (_, i) => i + 1).map((option) => {
               return (
-                <MenuItem key={option.label} value={option.value}>
-                  {option.label}
+                <MenuItem key={option} value={option}>
+                  {option}
                 </MenuItem>
               );
             })}

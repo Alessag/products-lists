@@ -4,11 +4,10 @@ import { Product } from "../utils/types";
 export class ProductService {
   private readonly client = client;
 
-  async products(limit: number, skip: number): Promise<Product[]> {
-    const response = await fetch(
-      `https://dummyjson.com/products?limit=${limit}&skip=${skip}`
+  async getProducts(limit: number, skip: number): Promise<Product[]> {
+    const { data } = await this.client.get(
+      `/products?limit=${limit}&skip=${skip}`
     );
-    const data = await response.json();
 
     return data.products;
   }

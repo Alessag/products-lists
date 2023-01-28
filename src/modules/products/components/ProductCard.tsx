@@ -4,7 +4,14 @@ import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import { Box } from "@mui/system";
-import { Modal } from "@mui/material";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Modal,
+  Typography,
+} from "@mui/material";
 
 type Props = {
   brand: string;
@@ -24,9 +31,9 @@ const style = {
   boxShadow: 24,
   p: 4,
   display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  border: "2px solid #000",
 };
 
 export default function ProductCard({
@@ -41,18 +48,25 @@ export default function ProductCard({
 
   return (
     <>
-      <div
-        className="border-2 border-red-500 flex flex-col items-center h-80 cursor-pointer bg-gray-100 space-y-2 text-gray-700"
-        onClick={handleOpen}
-      >
-        <img
-          src={thumbnail}
-          alt={`${title} image `}
-          className="border-2 border-blue-500 w-full h-60 object-cover"
-        />
-        <h3>Title: {title}</h3>
-        <p>Brand: {brand}</p>
-      </div>
+      <Card sx={{ maxWidth: 345, height: 320 }} onClick={handleOpen}>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            sx={{ objectFit: "cover", height: 200 }}
+            image={thumbnail}
+            alt={`${title} image `}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h6" component="div">
+              {title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {brand}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -60,24 +74,27 @@ export default function ProductCard({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <div className="w-full flex flex-row justify-end">
+            <button onClick={handleClose} className="text-xl font-bold">
+              x
+            </button>
+          </div>
           <Swiper
             modules={[Navigation, Pagination]}
             slidesPerView={1}
             navigation
             pagination={{ clickable: true }}
             scrollbar={{ draggable: true }}
-            onSwiper={(swiper) => console.log(swiper)}
-            onSlideChange={() => console.log("slide change")}
             className="w-full h-full"
           >
             {images.map((image) => (
               <SwiperSlide
                 key={image}
-                className="border-2 border-green-100 flex justify-center items-center"
+                className="flex justify-center items-center"
               >
                 <img
                   src={image}
-                  className="w-90 h-90 object-cover border-2"
+                  className="w-90 h-90 object-cover"
                   alt={`${title} images`}
                 />
               </SwiperSlide>

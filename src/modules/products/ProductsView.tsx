@@ -1,10 +1,17 @@
 import React from "react";
 
+import {
+  FormControl,
+  MenuItem,
+  Pagination,
+  Select,
+  Skeleton,
+} from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { FormControl, MenuItem, Pagination, Select } from "@mui/material";
+
 import ProductCard from "./components/ProductCard";
-import { Product } from "./utils/types";
 import { ProductService } from "./lib/ProductsService";
+import { Product } from "./utils/types";
 
 const options = [
   {
@@ -30,23 +37,50 @@ const options = [
 ];
 
 export function ProductsView() {
-  const [products, setProducts] = React.useState<Product[]>([]);
-  const [columns, setColumns] = React.useState("4");
-  const gridClass = `grid grid-cols-${columns} gap-x-10 gap-y-10 py-5`;
   const productService = new ProductService();
+  const [products, setProducts] = React.useState<Product[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [columns, setColumns] = React.useState("4");
+  const [page, setPage] = React.useState(1);
+  const limit = 20;
+  const skip = (page - 1) * limit;
+
+  const gridClass = `grid grid-cols-${columns} gap-x-10 gap-y-10 py-5`;
 
   React.useEffect(() => {
-    console.log("useEffect");
-    productService.products(10).then((products) => {
-      setProducts(products);
-    });
-    console.log("Products", products);
-  }, []);
+    try {
+      setLoading(true);
+      setProducts([]);
+
+      productService.products(limit, skip).then((products) => {
+        setProducts(products);
+        setLoading(false);
+      });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }, [page]);
 
   const handleChange = (event: SelectChangeEvent) => {
-    console.log(event.target.value);
     setColumns(event.target.value as string);
   };
+
+  const loadingState = (
+    <>
+      {Array.from(Array(20).keys()).map((product) => {
+        return (
+          <Skeleton
+            key={product}
+            variant="rectangular"
+            width={310}
+            height={320}
+          />
+        );
+      })}
+    </>
+  );
+
   return (
     <div>
       <h1 className="text-3xl font-bold underline underline-offset-2">
@@ -72,20 +106,28 @@ export function ProductsView() {
         </FormControl>
       </div>
       <div className={gridClass}>
-        {products.map((product) => {
-          return (
-            <ProductCard
-              key={product.id}
-              brand={product.brand}
-              images={product.images}
-              thumbnail={product.thumbnail}
-              title={product.title}
-            />
-          );
-        })}
+        {loading
+          ? loadingState
+          : products.map((product) => {
+              return (
+                <ProductCard
+                  key={product.id}
+                  brand={product.brand}
+                  images={product.images}
+                  thumbnail={product.thumbnail}
+                  title={product.title}
+                />
+              );
+            })}
       </div>
       <div className="flex justify-center items-center h-32">
-        <Pagination count={10} size="large" />
+        <Pagination
+          count={5}
+          size="large"
+          onChange={(event, page) => {
+            setPage(page);
+          }}
+        />
       </div>
     </div>
   );
